@@ -32,7 +32,8 @@ if (typeof angular != "undefined") {
 }
 
 import extend from "extend";
-import XhrPromise from "xhrpromise";
+//import XhrPromise from "xhrpromise";
+import axios from "axios";
 
 export default class JsBandwidth {
 
@@ -86,11 +87,15 @@ export default class JsBandwidth {
 		var self = this;
 		options = extend({}, this.options, options);
 		var start = new Date().getTime();
-		var r = XhrPromise.create({
+		/* var r = XhrPromise.create({
 				method: "GET",
 				url: options.downloadUrl + "?id=" + start,
 				dataType: 'application/octet-stream',
-				headers: {'Content-type': 'application/octet-stream'}});
+				headers: {'Content-type': 'application/octet-stream'}}); */
+		var r = axios.get(options.downloadUrl + "?id=" + start, {
+			headers: {'Content-type': 'application/octet-stream'}
+
+		});
 		var r1 = r.then( 
 				function(response) {
 					return {downloadSpeed: JsBandwidth.calculateBandwidth((response.data || response).length, start), data: response.data || response};
@@ -112,12 +117,16 @@ export default class JsBandwidth {
 			options.uploadData = JsBandwidth.truncate(options.uploadData, options.uploadDataMaxSize);
 		}
 		var start = new Date().getTime();
-		var r = XhrPromise.create({
+		/* var r = XhrPromise.create({
 				method: "POST",
 				url: options.uploadUrl + "?id=" + start,
 				data: options.uploadData,
 				dataType: 'application/octet-stream',
-				headers: {'Content-type': 'application/octet-stream'}});
+				headers: {'Content-type': 'application/octet-stream'}}); */
+
+		var r = axios.post(options.uploadUrl + "?id=" + start, options.uploadData, {
+			headers: {'Content-type': 'application/octet-stream'}
+		});
 		var r1 = r.then(
 				function(response) {
 					return {uploadSpeed: JsBandwidth.calculateBandwidth(options.uploadData.length, start)};
@@ -131,11 +140,15 @@ export default class JsBandwidth {
 		options = extend({}, this.options, options);
 		options.latencyTestUrl = options.latencyTestUrl || options.downloadUrl;
 		var start = new Date().getTime();
-		var r = XhrPromise.create({
+		/* var r = XhrPromise.create({
 				method: "HEAD",
 				url: options.latencyTestUrl + "?id=" + start,
 				dataType: 'application/octet-stream',
-				headers: {'Content-type': 'application/octet-stream'}});
+				headers: {'Content-type': 'application/octet-stream'}}); */
+
+		var r = axios.head( options.latencyTestUrl + "?id=" + start, {
+			headers: {'Content-type': 'application/octet-stream'}
+		});
 		var r1 = r.then(
 				function(response) {
 					// time divided by 2 because of 3-way TCP handshake
