@@ -93,8 +93,8 @@ export default class JsBandwidth {
 				dataType: 'application/octet-stream',
 				headers: {'Content-type': 'application/octet-stream'}}); */
 		var r = axios.get(options.downloadUrl + "?id=" + start, {
-			headers: {'Content-type': 'application/octet-stream'}
-
+			headers: {'Content-type': 'application/octet-stream'},
+			responseType: 'blob'
 		});
 		var r1 = r.then( 
 				function(response) {
